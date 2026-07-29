@@ -1,0 +1,173 @@
+#================================================================================#
+# LICENSE (MIT)                                                                  #
+#================================================================================#
+#                                                                                #
+# The MIT License (MIT)                                                          #
+#                                                                                #
+# Copyright (c) 2026 luau-project https://github.com/luau-project/lnuminfo       #
+#                                                                                #
+# Permission is hereby granted, free of charge, to any person obtaining a copy   #
+# of this software and associated documentation files (the "Software"), to deal  #
+# in the Software without restriction, including without limitation the rights   #
+# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell      #
+# copies of the Software, and to permit persons to whom the Software is          #
+# furnished to do so, subject to the following conditions:                       #
+#                                                                                #
+# The above copyright notice and this permission notice shall be included in all #
+# copies or substantial portions of the Software.                                #
+#                                                                                #
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR     #
+# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,       #
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE    #
+# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER         #
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,  #
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE  #
+# SOFTWARE.                                                                      #
+#                                                                                #
+#================================================================================#
+
+__EMPTY =
+DIRSEP = \$(__EMPTY)
+SystemDrive = c:
+WINDIR = $(SystemDrive)$(DIRSEP)windows
+PROGRAMFILES = $(SystemDrive)$(DIRSEP)Program Files
+SHELL = $(WINDIR)$(DIRSEP)System32$(DIRSEP)cmd.exe
+OPENARGDELIMITER = "
+CLOSEARGDELIMITER = $(OPENARGDELIMITER)
+
+PACKAGE_NAME = lnuminfo
+PACKAGE_VERSION = 0.0.1
+PACKAGE_REVISION = 1
+PACKAGE_REPOSITORY_URL = https://github.com/luau-project/$(PACKAGE_NAME)
+PACKAGE_SOURCE_URL = git+$(PACKAGE_REPOSITORY_URL).git
+PACKAGE_SOURCE_BRANCH = main
+PACKAGE_TAG = v$(PACKAGE_VERSION)
+PACKAGE_HOMEPAGE_URL = $(PACKAGE_REPOSITORY_URL)
+ROCKSPEC_EXT = .rockspec
+ROCKSPEC_DIR = rockspecs
+ROCKSPEC_TEMPLATE = $(ROCKSPEC_DIR)$(DIRSEP)rockspec.in
+DEV_ROCKSPEC_VERSION = dev
+DEV_ROCKSPEC_REVISION = 1
+DEV_ROCKSPEC = $(ROCKSPEC_DIR)$(DIRSEP)$(PACKAGE_NAME)-$(DEV_ROCKSPEC_VERSION)-$(DEV_ROCKSPEC_REVISION)$(ROCKSPEC_EXT)
+VERSIONED_ROCKSPEC = $(ROCKSPEC_DIR)$(DIRSEP)$(PACKAGE_NAME)-$(PACKAGE_VERSION)-$(PACKAGE_REVISION)$(ROCKSPEC_EXT)
+
+PREFIX = $(SystemDrive)$(DIRSEP)lua
+LUA = lua
+INSTALL_LMOD = $(PREFIX)$(DIRSEP)bin
+
+LUAROCKS = luarocks
+LUAROCKSLINTARGS =
+LUAROCKSMAKEARGS =
+
+TESTDRIVER = test.lua
+TESTCOVFLAG = --coverage
+
+COVRUNNER = luacov
+COVSTAT = luacov.stats.out
+COVREPORT = luacov.report.out
+COVIEEE754BINARY64 = IEEE-754-binary64
+COVIEEE754BINARY32 = IEEE-754-binary32
+COVIEEE754BINARY64EXTENDED = IEEE-754-binary64-extended
+
+ADDTOSTDOUT = >>
+TOSTDOUT = >
+
+SED = $(OPENARGDELIMITER)$(PROGRAMFILES)$(DIRSEP)Git$(DIRSEP)usr$(DIRSEP)bin$(DIRSEP)sed.exe$(CLOSEARGDELIMITER)
+SEDEFLAG = -e
+
+ECHO = echo
+ECHOOPENDELIMITER =
+ECHOCLOSEDELIMITER = $(ECHOOPENDELIMITER)
+ECHOESCAPEDELIMITER = $(ECHOOPENDELIMITER)
+ECHOEMPTY = $(ECHO).
+
+RM = del
+RMFLAG =
+
+MKDIR = mkdir
+MKDIRFLAG =
+
+INSTALL = copy
+INSTALLFLAG = /Y
+
+all: create-rockspecs
+
+create-install-dir:
+	-$(MKDIR) $(MKDIRFLAG) $(OPENARGDELIMITER)$(INSTALL_LMOD)$(CLOSEARGDELIMITER)
+
+install: $(PACKAGE_NAME).lua create-install-dir
+	$(INSTALL) $(INSTALLFLAG) $(PACKAGE_NAME).lua $(OPENARGDELIMITER)$(INSTALL_LMOD)$(CLOSEARGDELIMITER)
+
+uninstall:
+	-$(RM) $(RMFLAG) $(OPENARGDELIMITER)$(INSTALL_LMOD)$(DIRSEP)$(PACKAGE_NAME).lua$(CLOSEARGDELIMITER)
+
+coverage: $(COVREPORT)
+
+$(COVREPORT): $(COVSTAT)
+	$(COVRUNNER)
+
+test-ieee-754-binary64: $(TESTDRIVER)
+	$(LUA) $(TESTDRIVER) $(COVIEEE754BINARY64)
+
+test-ieee-754-binary32: $(TESTDRIVER)
+	$(LUA) $(TESTDRIVER) $(COVIEEE754BINARY32)
+
+test-ieee-754-binary64-extended: $(TESTDRIVER)
+	$(LUA) $(TESTDRIVER) $(COVIEEE754BINARY64EXTENDED)
+
+test-ieee-754-binary64-with-cov: $(TESTDRIVER)
+	$(LUA) $(TESTDRIVER) $(TESTCOVFLAG) $(COVIEEE754BINARY64)
+
+test-ieee-754-binary32-with-cov: $(TESTDRIVER)
+	$(LUA) $(TESTDRIVER) $(TESTCOVFLAG) $(COVIEEE754BINARY32)
+
+test-ieee-754-binary64-extended-with-cov: $(TESTDRIVER)
+	$(LUA) $(TESTDRIVER) $(TESTCOVFLAG) $(COVIEEE754BINARY64EXTENDED)
+
+luarocks-install-dev: $(DEV_ROCKSPEC)
+	$(LUAROCKS) make $(LUAROCKSMAKEARGS) $(DEV_ROCKSPEC)
+
+luarocks-install: $(VERSIONED_ROCKSPEC)
+	$(LUAROCKS) make $(LUAROCKSMAKEARGS) $(VERSIONED_ROCKSPEC)
+
+luarocks-uninstall-dev:
+	$(LUAROCKS) remove $(LUAROCKSREMOVEARGS) $(DEV_ROCKSPEC)
+
+luarocks-uninstall:
+	$(LUAROCKS) remove $(LUAROCKSREMOVEARGS) $(VERSIONED_ROCKSPEC)
+
+lint-rockspecs: lint-dev-rockspec lint-rockspec
+
+lint-dev-rockspec: $(DEV_ROCKSPEC)
+	$(LUAROCKS) lint $(LUAROCKSLINTARGS) $(DEV_ROCKSPEC)
+
+lint-rockspec: $(VERSIONED_ROCKSPEC)
+	$(LUAROCKS) lint $(LUAROCKSLINTARGS) $(VERSIONED_ROCKSPEC)
+
+create-rockspecs: create-dev-rockspec create-rockspec
+
+create-dev-rockspec: $(DEV_ROCKSPEC)
+
+create-rockspec: $(VERSIONED_ROCKSPEC)
+
+$(DEV_ROCKSPEC): $(ROCKSPEC_TEMPLATE)
+	$(SED) $(SEDEFLAG) $(OPENARGDELIMITER)s|@PACKAGE_NAME@|$(PACKAGE_NAME)|g$(CLOSEARGDELIMITER) $(SEDEFLAG) $(OPENARGDELIMITER)s|@PACKAGE_VERSION@|$(DEV_ROCKSPEC_VERSION)|g$(CLOSEARGDELIMITER) $(SEDEFLAG) $(OPENARGDELIMITER)s|@PACKAGE_REVISION@|$(DEV_ROCKSPEC_REVISION)|g$(CLOSEARGDELIMITER) $(SEDEFLAG) $(OPENARGDELIMITER)s|@PACKAGE_REPOSITORY_URL@|$(PACKAGE_REPOSITORY_URL)|g$(CLOSEARGDELIMITER) $(SEDEFLAG) $(OPENARGDELIMITER)s|@PACKAGE_SOURCE_URL@|$(PACKAGE_SOURCE_URL)|g$(CLOSEARGDELIMITER) $(SEDEFLAG) $(OPENARGDELIMITER)s|@PACKAGE_SOURCE_BRANCH@|$(PACKAGE_SOURCE_BRANCH)|g$(CLOSEARGDELIMITER) $(SEDEFLAG) $(OPENARGDELIMITER)s|@PACKAGE_TAG@|$(PACKAGE_TAG)|g$(CLOSEARGDELIMITER) $(SEDEFLAG) $(OPENARGDELIMITER)s|@PACKAGE_HOMEPAGE_URL@|$(PACKAGE_HOMEPAGE_URL)|g$(CLOSEARGDELIMITER) $(ROCKSPEC_TEMPLATE)$(TOSTDOUT) $(DEV_ROCKSPEC)
+
+$(VERSIONED_ROCKSPEC): $(ROCKSPEC_TEMPLATE)
+	$(SED) $(SEDEFLAG) $(OPENARGDELIMITER)s|@PACKAGE_NAME@|$(PACKAGE_NAME)|g$(CLOSEARGDELIMITER) $(SEDEFLAG) $(OPENARGDELIMITER)s|@PACKAGE_VERSION@|$(PACKAGE_VERSION)|g$(CLOSEARGDELIMITER) $(SEDEFLAG) $(OPENARGDELIMITER)s|@PACKAGE_REVISION@|$(PACKAGE_REVISION)|g$(CLOSEARGDELIMITER) $(SEDEFLAG) $(OPENARGDELIMITER)s|@PACKAGE_REPOSITORY_URL@|$(PACKAGE_REPOSITORY_URL)|g$(CLOSEARGDELIMITER) $(SEDEFLAG) $(OPENARGDELIMITER)s|@PACKAGE_SOURCE_URL@|$(PACKAGE_SOURCE_URL)|g$(CLOSEARGDELIMITER) $(SEDEFLAG) $(OPENARGDELIMITER)s|@PACKAGE_SOURCE_BRANCH@|$(PACKAGE_SOURCE_BRANCH)|g$(CLOSEARGDELIMITER) $(SEDEFLAG) $(OPENARGDELIMITER)s|@PACKAGE_TAG@|$(PACKAGE_TAG)|g$(CLOSEARGDELIMITER) $(SEDEFLAG) $(OPENARGDELIMITER)s|@PACKAGE_HOMEPAGE_URL@|$(PACKAGE_HOMEPAGE_URL)|g$(CLOSEARGDELIMITER) $(ROCKSPEC_TEMPLATE)$(TOSTDOUT) $(VERSIONED_ROCKSPEC)
+
+clean-cov-stat:
+	-$(RM) $(RMFLAG) $(COVSTAT)
+
+clean-cov-report:
+	-$(RM) $(RMFLAG) $(COVREPORT)
+
+clean-cov: clean-cov-stat clean-cov-report
+
+clean-dev-rockspec:
+	-$(RM) $(RMFLAG) $(DEV_ROCKSPEC)
+
+clean-rockspec:
+	-$(RM) $(RMFLAG) $(VERSIONED_ROCKSPEC)
+
+clean: clean-cov clean-dev-rockspec clean-rockspec
