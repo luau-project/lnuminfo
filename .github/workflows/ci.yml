@@ -178,7 +178,7 @@ jobs:
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
 
-  test-IEEE-754-formats:
+  test-c-float-type:
     runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: false
@@ -198,9 +198,9 @@ jobs:
           - msvc
           - cc
 
-        format:
-          - binary32
-          - binary64-extended
+        c-float-type:
+          - float
+          - long double
 
         exclude:
 
@@ -210,9 +210,6 @@ jobs:
           - os: macos-latest
             toolchain: msvc
 
-          - os: windows-latest
-            toolchain: msvc
-            format: binary64-extended
     steps:
 
       - name: Checkout
@@ -222,19 +219,26 @@ jobs:
         uses: step-security/msvc-dev-cmd@22c98154b708dbd743e6f27a933cf6ceba3305c4 # v1.13.1
         if: ${{ runner.os == 'Windows' && matrix.toolchain == 'msvc' }}
 
-      - name: Set environment variables for LUA_INT_TYPE and LUA_FLOAT_TYPE build types
+      - name: Set environment variables according to the C floating-point type
         shell: pwsh
         run: |
-          if ("${{ matrix.format }}" -eq "binary32") {
+          if ("${{ matrix.c-float-type }}" -eq "float") {
             Add-Content -Path "${{ github.env }}" -Value "BUILD_LUA_INT_TYPE=LUA_INT_INT";
             Add-Content -Path "${{ github.env }}" -Value "BUILD_LUA_FLOAT_TYPE=LUA_FLOAT_FLOAT";
+            Add-Content -Path "${{ github.env }}" -Value "TEST_TARGET=test-ieee-754-binary32-with-cov";
           }
-          elseif ("${{ matrix.format }}" -eq "binary64-extended") {
+          elseif ("${{ matrix.c-float-type }}" -eq "long double") {
             Add-Content -Path "${{ github.env }}" -Value "BUILD_LUA_INT_TYPE=LUA_INT_LONGLONG";
             Add-Content -Path "${{ github.env }}" -Value "BUILD_LUA_FLOAT_TYPE=LUA_FLOAT_LONGDOUBLE";
+            if (("${{ matrix.toolchain }}" -eq "msvc") -or ("${{ runner.os }}" -eq "macOS")) {
+              Add-Content -Path "${{ github.env }}" -Value "TEST_TARGET=test-ieee-754-binary64-with-cov";
+            }
+            else {
+              Add-Content -Path "${{ github.env }}" -Value "TEST_TARGET=test-ieee-754-binary64-extended-with-cov";
+            }
           }
           else {
-            Write-Host "Unknown matrix.format: ${{ matrix.format }}";
+            Write-Host "Unknown matrix.c-float-type: ${{ matrix.c-float-type }}";
             exit 1;
           }
 
@@ -342,15 +346,15 @@ jobs:
 
       - name: Lint rockspec, Test with Coverage and Generate Coverage Report through NMake
         if: ${{ runner.os == 'Windows' && matrix.toolchain == 'msvc' }}
-        run: nmake /F Makefile.windows clean all lint-rockspecs test-ieee-754-${{ matrix.format }}-with-cov coverage
+        run: nmake /F Makefile.windows clean all lint-rockspecs ${{ env.TEST_TARGET }} coverage
 
       - name: Lint rockspec, Test with Coverage and Generate Coverage Report through GNU Make for MinGW / MinGW-w64
         if: ${{ runner.os == 'Windows' && matrix.toolchain != 'msvc' }}
-        run: mingw32-make -f Makefile.windows clean all lint-rockspecs test-ieee-754-${{ matrix.format }}-with-cov coverage
+        run: mingw32-make -f Makefile.windows clean all lint-rockspecs ${{ env.TEST_TARGET }} coverage
 
       - name: Lint rockspec, Test with Coverage and Generate Coverage Report through make
         if: ${{ runner.os != 'Windows' }}
-        run: make -f Makefile.unix clean all lint-rockspecs test-ieee-754-${{ matrix.format }}-with-cov coverage
+        run: make -f Makefile.unix clean all lint-rockspecs ${{ env.TEST_TARGET }} coverage
 
       - name: Upload coverage to CodeCov
         uses: codecov/codecov-action@fb8b3582c8e4def4969c97caa2f19720cb33a72f # v7.0.0
