@@ -26,15 +26,15 @@ Detect characteristics of floating-point numbers in pure Lua.
 
 ## Introduction
 
-Usually, the standard build of Lua (&ge; `5.1`) uses `double` as a floating-point type. Since version `5.3`, one can build Lua employing `float` (single precision), `double` (double precision) or `long double` (often, double extended precision) as the floating-point type for Lua numbers. Nowadays, almost all processors / compilers are compliant to IEEE 754 standard floating-point formats:
+Usually, the standard build of Lua (&ge; `5.1`) uses `double` as a floating-point type. Since version `5.3`, one can build Lua employing `float` (single precision), `double` (double precision) or `long double` (often, double extended precision on Intel / AMD x86) as the floating-point type for Lua numbers. Nowadays, almost all processors / compilers are compliant to IEEE 754 standard floating-point formats:
 
 1. IEEE 754 standard, 32-bit base-2, known as `binary32` (single precision)
 2. IEEE 754 standard, 64-bit base-2, known as `binary64` (double precision)
 3. IEEE 754 standard, 80-bit base-2, known as `binary64-extended` (double extended precision)
 
-> [!WARNING]
+> [!NOTE]
 > 
-> **Exception**: On Windows, the Microsoft Visual C/C++ toolchain (MSVC) maps `long double` to double precision (`binary64`) floating-point numbers.
+> On Windows, the Microsoft Visual C/C++ toolchain (MSVC) maps `long double` to double precision (`binary64`) floating-point numbers. On the ARM64 architecture used by Apple Silicon macOS, `long double` is also mapped to `binary64`.
 
 In plain Lua, there is no way to know the low level numerical limits which apply to Lua numbers.
 
