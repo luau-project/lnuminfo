@@ -85,7 +85,7 @@ jobs:
         uses: actions/cache/restore@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
         with:
           path: deps/datafile-${{ env.DATAFILE_VERSION }}.tar.gz
-          key: datafile
+          key: datafile-${{ env.DATAFILE_VERSION }}
           enableCrossOsArchive: true
 
       - name: Download datafile
@@ -97,7 +97,7 @@ jobs:
         uses: actions/cache/save@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
         with:
           path: deps/datafile-${{ env.DATAFILE_VERSION }}.tar.gz
-          key: datafile
+          key: datafile-${{ env.DATAFILE_VERSION }}
           enableCrossOsArchive: true
 
       - name: Extract datafile
@@ -112,7 +112,7 @@ jobs:
         uses: actions/cache/restore@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
         with:
           path: deps/luacov-${{ env.LUACOV_VERSION }}.tar.gz
-          key: luacov
+          key: luacov-${{ env.LUACOV_VERSION }}
           enableCrossOsArchive: true
 
       - name: Download luacov
@@ -124,7 +124,7 @@ jobs:
         uses: actions/cache/save@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
         with:
           path: deps/luacov-${{ env.LUACOV_VERSION }}.tar.gz
-          key: luacov
+          key: luacov-${{ env.LUACOV_VERSION }}
           enableCrossOsArchive: true
 
       - name: Extract luacov
@@ -139,7 +139,7 @@ jobs:
         uses: actions/cache/restore@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
         with:
           path: deps/cluacov-${{ env.CLUACOV_VERSION }}.tar.gz
-          key: cluacov
+          key: cluacov-${{ env.CLUACOV_VERSION }}
           enableCrossOsArchive: true
 
       - name: Download cluacov
@@ -151,7 +151,7 @@ jobs:
         uses: actions/cache/save@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
         with:
           path: deps/cluacov-${{ env.CLUACOV_VERSION }}.tar.gz
-          key: cluacov
+          key: cluacov-${{ env.CLUACOV_VERSION }}
           enableCrossOsArchive: true
 
       - name: Extract cluacov
