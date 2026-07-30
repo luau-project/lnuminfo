@@ -2,6 +2,12 @@ name: Publish to LuaRocks
 
 on: workflow_dispatch
 
+env:
+  LUA_PACKAGE_NAME: lnuminfo
+
+permissions:
+  contents: read
+
 jobs:
 
   get-version-from-library:
@@ -21,7 +27,7 @@ jobs:
       - name: Get version from the library
         id: version
         run: |
-          version=$(grep -oP 'local version = "(\d+\.\d+\.\d+)"' lnuminfo.lua | grep -oP '(\d+\.\d+\.\d+)')
+          version=$(grep -oP 'local version = "(\d+\.\d+\.\d+)"' ${{ env.LUA_PACKAGE_NAME }}.lua | grep -oP '(\d+\.\d+\.\d+)')
           if [[ $version =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
             echo "version=${version}" >> "$GITHUB_OUTPUT"
           else
@@ -45,7 +51,7 @@ jobs:
       - name: Get the latest rockspec sorted by version in the name
         id: rockspec
         run: |
-          rockspec=$(git ls-files '*.rockspec' | sort --version-sort | tail -n2 | head -n1)
+          rockspec=$(git ls-files '**/${{ env.LUA_PACKAGE_NAME }}-*.rockspec' | sort --version-sort | tail -n2 | head -n1)
 
           if test -e "${rockspec}"; then
             echo "rockspec=${rockspec}" >> "$GITHUB_OUTPUT"
