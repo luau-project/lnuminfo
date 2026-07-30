@@ -348,7 +348,7 @@ elseif (testkind == IEEE_754_BINARY32) then
 
 elseif (testkind == IEEE_754_BINARY64_EXTENDED) then
 
-    testnames.EPSILON = "lnuminfo.detect().EPSILON should be close enough to 1.0842021724855044340e-19 for IEEE-754 binary128"
+    testnames.EPSILON = "lnuminfo.detect().EPSILON should be close enough to 1.0842021724855044340e-19 for IEEE-754 binary64-extended"
     ltestlib.new_test(testnames.EPSILON, function()
         ltestlib.assert_true(
             testnames.EPSILON,
@@ -356,7 +356,7 @@ elseif (testkind == IEEE_754_BINARY64_EXTENDED) then
         )
     end)
 
-    testnames.MAX = "lnuminfo.detect().MAX should be close enough to 1.1897314953572317650e+4932 for IEEE-754 binary128"
+    testnames.MAX = "lnuminfo.detect().MAX should be close enough to 1.1897314953572317650e+4932 for IEEE-754 binary64-extended"
     ltestlib.new_test(testnames.MAX, function()
         ltestlib.assert_true(
             testnames.MAX,
@@ -364,7 +364,7 @@ elseif (testkind == IEEE_754_BINARY64_EXTENDED) then
         )
     end)
 
-    testnames.MIN = "lnuminfo.detect().MIN should be close enough to 3.3621031431120935063e-4932 for IEEE-754 binary128"
+    testnames.MIN = "lnuminfo.detect().MIN should be close enough to 3.3621031431120935063e-4932 for IEEE-754 binary64-extended"
     ltestlib.new_test(testnames.MIN, function()
         ltestlib.assert_true(
             testnames.MIN,
@@ -372,7 +372,7 @@ elseif (testkind == IEEE_754_BINARY64_EXTENDED) then
         )
     end)
 
-    testnames.MAX_EXP = "lnuminfo.detect().MAX_EXP should be equal to 16384 for IEEE-754 binary128"
+    testnames.MAX_EXP = "lnuminfo.detect().MAX_EXP should be equal to 16384 for IEEE-754 binary64-extended"
     ltestlib.new_test(testnames.MAX_EXP, function()
         ltestlib.assert_equal(
             testnames.MAX_EXP,
@@ -381,7 +381,7 @@ elseif (testkind == IEEE_754_BINARY64_EXTENDED) then
         )
     end)
 
-    testnames.MIN_EXP = "lnuminfo.detect().MIN_EXP should be equal to -16381 for IEEE-754 binary128"
+    testnames.MIN_EXP = "lnuminfo.detect().MIN_EXP should be equal to -16381 for IEEE-754 binary64-extended"
     ltestlib.new_test(testnames.MIN_EXP, function()
         ltestlib.assert_equal(
             testnames.MIN_EXP,
@@ -390,7 +390,7 @@ elseif (testkind == IEEE_754_BINARY64_EXTENDED) then
         )
     end)
 
-    testnames.MAX_10_EXP = "lnuminfo.detect().MAX_10_EXP should be equal to 4932 for IEEE-754 binary128"
+    testnames.MAX_10_EXP = "lnuminfo.detect().MAX_10_EXP should be equal to 4932 for IEEE-754 binary64-extended"
     ltestlib.new_test(testnames.MAX_10_EXP, function()
         ltestlib.assert_equal(
             testnames.MAX_10_EXP,
@@ -398,7 +398,7 @@ elseif (testkind == IEEE_754_BINARY64_EXTENDED) then
             lnuminfo.detect().MAX_10_EXP)
     end)
 
-    testnames.MIN_10_EXP = "lnuminfo.detect().MIN_10_EXP should be equal to -4931 for IEEE-754 binary128"
+    testnames.MIN_10_EXP = "lnuminfo.detect().MIN_10_EXP should be equal to -4931 for IEEE-754 binary64-extended"
     ltestlib.new_test(testnames.MIN_10_EXP, function()
         ltestlib.assert_equal(
             testnames.MIN_10_EXP,
@@ -407,7 +407,7 @@ elseif (testkind == IEEE_754_BINARY64_EXTENDED) then
         )
     end)
 
-    testnames.DIG = "lnuminfo.detect().DIG should be equal to 18 for IEEE-754 binary128"
+    testnames.DIG = "lnuminfo.detect().DIG should be equal to 18 for IEEE-754 binary64-extended"
     ltestlib.new_test(testnames.DIG, function()
         ltestlib.assert_equal(
             testnames.DIG,
@@ -416,7 +416,7 @@ elseif (testkind == IEEE_754_BINARY64_EXTENDED) then
         )
     end)
 
-    testnames.MANT_DIG = "lnuminfo.detect().MANT_DIG should be equal to 64 for IEEE-754 binary128"
+    testnames.MANT_DIG = "lnuminfo.detect().MANT_DIG should be equal to 64 for IEEE-754 binary64-extended"
     ltestlib.new_test(testnames.MANT_DIG, function()
         ltestlib.assert_equal(
             testnames.MANT_DIG,
