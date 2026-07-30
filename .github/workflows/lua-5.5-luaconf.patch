@@ -1,0 +1,17 @@
+diff -Naur lua-5.5.0-orig/src/luaconf.h lua-5.5.0/src/luaconf.h
+--- lua-5.5.0-orig/src/luaconf.h	2026-07-29 17:28:54.722888284 -0300
++++ lua-5.5.0/src/luaconf.h	2026-07-29 17:33:58.110659532 -0300
+@@ -174,8 +174,13 @@
+ #else		/* }{ */
+ /* use defaults */
+ 
++#if !defined(LUA_INT_TYPE)
+ #define LUA_INT_TYPE	LUA_INT_DEFAULT
++#endif
++
++#if !defined(LUA_FLOAT_TYPE)
+ #define LUA_FLOAT_TYPE	LUA_FLOAT_DEFAULT
++#endif
+ 
+ #endif				/* } */
+ 
