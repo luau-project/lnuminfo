@@ -202,7 +202,23 @@ jobs:
           DO FOR /F "TOKENS=* USEBACKQ" %%I IN (`luarocks config variables.LUA_INCDIR`) ^
           DO FOR /F "TOKENS=* USEBACKQ" %%A IN (`luarocks config variables.LUA_LIBDIR`) ^
           DO FOR /F "TOKENS=* USEBACKQ" %%B IN (`luarocks config variables.LUALIB`) ^
-          DO %CURRENT_MAKE% %CURRENT_MAKE_FILE_FLAG% Makefile.windows "PREFIX=%%D" "CC=%%C" "CFLAGS=%%F" "CCONLY=%CURRENT_CCONLY%" "CCOUT=%CURRENT_CCOUT%" "CCINCFLAG=%CURRENT_CCINCFLAG%" "LD=%%L" "LDSHARED=%%S" "LDOUT=%CURRENT_LDOUT%" "LUA_INCDIR=%%I" "LUA_IMPLIB=%%A\%%B" clean all lint-rockspecs c-test-with-cov coverage
+          DO (
+            %CURRENT_MAKE% ^
+              %CURRENT_MAKE_FILE_FLAG% ^
+              Makefile.windows ^
+              "PREFIX=%%D" ^
+              "CC=%%C" ^
+              "CFLAGS=%%F" ^
+              "CCONLY=%CURRENT_CCONLY%" ^
+              "CCOUT=%CURRENT_CCOUT%" ^
+              "CCINCFLAG=%CURRENT_CCINCFLAG%" ^
+              "LD=%%L" ^
+              "LDSHARED=%%S" ^
+              "LDOUT=%CURRENT_LDOUT%" ^
+              "LUA_INCDIR=%%I" ^
+              "LUA_IMPLIB=%%A\%%B" ^
+              clean all lint-rockspecs c-test-with-cov coverage
+          )
 
       - name: Lint rockspec, Build C module for the tests, Test with Coverage and Generate Coverage Report (Unix)
         if: ${{ runner.os != 'Windows' }}
