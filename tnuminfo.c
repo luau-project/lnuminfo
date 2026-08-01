@@ -45,10 +45,10 @@
 #define tnuminfo_floatatt l_mathlim
 #define tnuminfo_mathop l_mathop
 #elif LUA_VERSION_NUM == 502
-#define tnuminfo_floatatt(n) (n)
+#define tnuminfo_floatatt(n) (DBL_##n)
 #define tnuminfo_mathop l_mathop
 #elif LUA_VERSION_NUM == 501
-#define tnuminfo_floatatt(n) (n)
+#define tnuminfo_floatatt(n) (DBL_##n)
 #define tnuminfo_mathop(op) (op)
 #else
 #error "This Lua version is not supported."
