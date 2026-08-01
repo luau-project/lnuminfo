@@ -172,11 +172,30 @@ if (tnuminfo_ok and (tnuminfo_type == "table")) then
         end)
     end
 else
-    testnames.n13 = "tnuminfo should be nil if failed to require"
+    testnames.n13 = "tnuminfo should be nil if failed to require on Lua versions 5.4 or older"
     ltestlib.new_test(testnames.n13, function()
-        ltestlib.assert_equal(
-            testnames.n13, "nil", tnuminfo_type
-        )
+        local major, minor = _VERSION:sub(5):match("^(%d+)%.(%d+)$")
+        major, minor = tonumber(major), tonumber(minor)
+        ltestlib.assert_equal(testnames.n13, "number", type(major))
+        ltestlib.assert_equal(testnames.n13, "number", type(minor))
+        if ((major >= 5) and (minor <= 4)) then
+            ltestlib.assert_equal(
+                testnames.n13, "nil", tnuminfo_type
+            )
+        end
+    end)
+
+    testnames.n14 = "tnuminfo should be a string if failed to require on Lua versions 5.5 or newer"
+    ltestlib.new_test(testnames.n14, function()
+        local major, minor = _VERSION:sub(5):match("^(%d+)%.(%d+)$")
+        major, minor = tonumber(major), tonumber(minor)
+        ltestlib.assert_equal(testnames.n14, "number", type(major))
+        ltestlib.assert_equal(testnames.n14, "number", type(minor))
+        if ((major >= 5) and (minor >= 5)) then
+            ltestlib.assert_equal(
+                testnames.n14, "string", tnuminfo_type
+            )
+        end
     end)
 end
 
