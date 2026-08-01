@@ -175,20 +175,28 @@ jobs:
         if: ${{ runner.os == 'Windows' }}
         shell: cmd
         run: |
-          IF "${{ matrix.toolchain }}"=="msvc" SET "CURRENT_MAKE=nmake"
-          IF "${{ matrix.toolchain }}"=="msvc" SET "CURRENT_MAKE_FILE_FLAG=/F"
-          IF "${{ matrix.toolchain }}"=="cc"   SET "CURRENT_MAKE=mingw32-make"
-          IF "${{ matrix.toolchain }}"=="cc"   SET "CURRENT_MAKE_FILE_FLAG=-f"
+          IF "${{ matrix.toolchain }}" EQU "msvc" (
+            SET "CURRENT_MAKE=nmake"
+            SET "CURRENT_MAKE_FILE_FLAG=/F"
+          ) ELSE IF "${{ matrix.toolchain }}" EQU "cc" (
+            SET "CURRENT_MAKE=mingw32-make"
+            SET "CURRENT_MAKE_FILE_FLAG=-f"
+          ) ELSE (
+            ECHO Unexpected matrix.toolchain: ${{ matrix.toolchain }}
+            EXIT /B 1
+          )
 
-          FOR /F "TOKENS=* USEBACKQ" %%D IN (`luarocks config variables.LUA_DIR`) DO ^
-            FOR /F "TOKENS=* USEBACKQ" %%A IN (`luarocks config variables.LUA_LIBDIR`) DO ^
-              FOR /F "TOKENS=* USEBACKQ" %%B IN (`luarocks config variables.LUALIB`) DO ^
-                %CURRENT_MAKE% ^
-                %CURRENT_MAKE_FILE_FLAG% Makefile.windows ^
-                "PREFIX=%%D" ^
-                "LUA_CPATH=%LUA_CPATH%" ^
-                "LUA_IMPLIB=%%A\%%B" ^
-                clean all lint-rockspecs c-test-with-cov coverage
+          FOR /F "TOKENS=* USEBACKQ" %%D IN (`luarocks config variables.LUA_DIR`) ^
+          DO FOR /F "TOKENS=* USEBACKQ" %%I IN (`luarocks config variables.LUA_INCDIR`) ^
+          DO FOR /F "TOKENS=* USEBACKQ" %%A IN (`luarocks config variables.LUA_LIBDIR`) ^
+          DO FOR /F "TOKENS=* USEBACKQ" %%B IN (`luarocks config variables.LUALIB`) ^
+          DO %CURRENT_MAKE% ^
+          %CURRENT_MAKE_FILE_FLAG% Makefile.windows ^
+          "PREFIX=%%D" ^
+          "LUA_INCDIR=%%I" ^
+          "LUA_CPATH=%LUA_CPATH%" ^
+          "LUA_IMPLIB=%%A\%%B" ^
+          clean all lint-rockspecs c-test-with-cov coverage
 
       - name: Lint rockspec, Test with Coverage and Generate Coverage Report (Unix)
         if: ${{ runner.os != 'Windows' }}
@@ -197,6 +205,7 @@ jobs:
             make \
               -f Makefile.unix \
               "PREFIX=$(luarocks config variables.LUA_DIR)" \
+              "LUA_INCDIR=$(luarocks config variables.LUA_INCDIR)" \
               "LUA_CPATH=$LUA_CPATH" \
               clean all lint-rockspecs c-test-with-cov coverage
           elif [ "${{ runner.os }}" = "macOS" ]; then
@@ -204,6 +213,7 @@ jobs:
               -f Makefile.unix \
               "LDSHARED=-bundle -undefined dynamic_lookup -all_load" \
               "PREFIX=$(luarocks config variables.LUA_DIR)" \
+              "LUA_INCDIR=$(luarocks config variables.LUA_INCDIR)" \
               "LUA_CPATH=$LUA_CPATH" \
               clean all lint-rockspecs c-test-with-cov coverage
           else
