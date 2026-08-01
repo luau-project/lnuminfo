@@ -148,6 +148,10 @@ test: $(TESTDRIVER)
 test-with-cov: $(TESTDRIVER)
 	$(SET) $(OPENARGDELIMITER)LUA_CPATH=$(LUA_CPATH_THIS_DIR)$(CLOSEARGDELIMITER)$(AND) $(LUA) $(TESTDRIVER) $(TESTCOVFLAG)
 
+c-test: tnuminfo-lib test
+
+c-test-with-cov: tnuminfo-lib test-with-cov
+
 luarocks-install-dev: $(DEV_ROCKSPEC)
 	$(LUAROCKS) make $(LUAROCKSMAKEARGS) $(DEV_ROCKSPEC)
 
