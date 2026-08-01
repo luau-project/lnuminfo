@@ -47,12 +47,14 @@
 #elif LUA_VERSION_NUM == 502
 #define tnuminfo_floatatt(n) (n)
 #define tnuminfo_mathop l_mathop
-#else
+#elif LUA_VERSION_NUM == 501
 #define tnuminfo_floatatt(n) (n)
 #define tnuminfo_mathop(op) (op)
+#else
+#error "This Lua version is not supported."
 #endif
 #else
-#error "LUA_VERSION_NUM expected to be defined"
+#error "LUA_VERSION_NUM expected to be defined."
 #endif
 
 struct tagtnuminfo_lua_Integer {
