@@ -29,7 +29,7 @@ env:
   CLUACOV_ROCKSPEC_REV: 1
 
 jobs:
-  test-IEEE-754-binary64:
+  test-minimal:
     runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: false
@@ -175,13 +175,10 @@ jobs:
         if: ${{ runner.os == 'Windows' }}
         shell: cmd
         run: |
-          IF "${{ matrix.toolchain }}" EQU "msvc" (
-            SET CURRENT_MAKE=nmake
-            SET CURRENT_MAKE_FILE_FLAG=/F
-          ) ELSE (
-            SET CURRENT_MAKE=mingw32-make
-            SET CURRENT_MAKE_FILE_FLAG=-F
-          )
+          IF "${{ matrix.toolchain }}"=="msvc" SET "CURRENT_MAKE=nmake"
+          IF "${{ matrix.toolchain }}"=="msvc" SET "CURRENT_MAKE_FILE_FLAG=/F"
+          IF "${{ matrix.toolchain }}"=="cc"   SET "CURRENT_MAKE=mingw32-make"
+          IF "${{ matrix.toolchain }}"=="cc"   SET "CURRENT_MAKE_FILE_FLAG=-f"
 
           FOR /F "TOKENS=* USEBACKQ" %%D IN (`luarocks config variables.LUA_DIR`) DO ^
             FOR /F "TOKENS=* USEBACKQ" %%A IN (`luarocks config variables.LUA_LIBDIR`) DO ^
@@ -205,7 +202,7 @@ jobs:
           elif [ "${{ runner.os }}" = "macOS" ]; then
             make \
               -f Makefile.unix \
-              "LDSHARED=-bundle -unknown dynamic_lookup -all_load" \
+              "LDSHARED=-bundle -undefined dynamic_lookup -all_load" \
               "PREFIX=$(luarocks config variables.LUA_DIR)" \
               "LUA_CPATH=$LUA_CPATH" \
               clean all lint-rockspecs c-test-with-cov coverage
