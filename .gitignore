@@ -1,2 +1,9 @@
 luacov.stats.out
 luacov.report.out
+tnuminfo.o
+tnuminfo.obj
+tnuminfo.dll
+tnuminfo.exp
+tnuminfo.lib
+tnuminfo.so
+tnuminfo.dylib
