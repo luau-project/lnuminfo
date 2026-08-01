@@ -109,7 +109,17 @@ static int tnuminfo_detect(lua_State *L) {
     return 1;
 }
 
-LUA_API int luaopen_tnuminfo(lua_State *L) {
+#if defined(_WIN32)
+#if defined(__GNUC__) || defined(__MINGW32__)
+#define TNUMINFO_API __attribute__((dllexport))
+#else
+#define TNUMINFO_API __declspec(dllexport)
+#endif
+#else
+#define TNUMINFO_API __attribute__((visibility("default")))
+#endif
+
+TNUMINFO_API int luaopen_tnuminfo(lua_State *L) {
     lua_createtable(L, 0, 0);
     lua_pushstring(L, "detect");
     lua_pushcfunction(L, tnuminfo_detect);
