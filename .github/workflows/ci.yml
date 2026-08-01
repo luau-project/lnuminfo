@@ -171,7 +171,7 @@ jobs:
         working-directory: cluacov-${{ env.CLUACOV_VERSION }}
         run: luarocks make "rockspecs/cluacov-${{ env.CLUACOV_VERSION }}-${{ env.CLUACOV_ROCKSPEC_REV }}.rockspec"
 
-      - name: Lint rockspec, Test with Coverage and Generate Coverage Report (Windows)
+      - name: Lint rockspec and Build C module for the tests (Windows)
         if: ${{ runner.os == 'Windows' }}
         shell: cmd
         run: |
@@ -180,12 +180,14 @@ jobs:
             SET "CURRENT_MAKE_FILE_FLAG=/F"
             SET "CURRENT_CCONLY=/c"
             SET "CURRENT_CCOUT=/Fo"
+            SET "CURRENT_CCINCFLAG=/I"
             SET "CURRENT_LDOUT=/OUT:"
           ) ELSE IF "${{ matrix.toolchain }}" EQU "cc" (
             SET "CURRENT_MAKE=mingw32-make"
             SET "CURRENT_MAKE_FILE_FLAG=-f"
             SET "CURRENT_CCONLY=-c"
             SET "CURRENT_CCOUT=-o "
+            SET "CURRENT_CCINCFLAG=-I"
             SET "CURRENT_LDOUT=-o "
           ) ELSE (
             ECHO Unexpected matrix.toolchain: ${{ matrix.toolchain }}
@@ -200,9 +202,17 @@ jobs:
           DO FOR /F "TOKENS=* USEBACKQ" %%I IN (`luarocks config variables.LUA_INCDIR`) ^
           DO FOR /F "TOKENS=* USEBACKQ" %%A IN (`luarocks config variables.LUA_LIBDIR`) ^
           DO FOR /F "TOKENS=* USEBACKQ" %%B IN (`luarocks config variables.LUALIB`) ^
-          DO %CURRENT_MAKE% %CURRENT_MAKE_FILE_FLAG% Makefile.windows "PREFIX=%%D" "CC=%%C" "CFLAGS=%%F" "CCONLY=%CURRENT_CCONLY%" "CCOUT=%CURRENT_CCOUT%" "LD=%%L" "LDSHARED=%%S" "LDOUT=%CURRENT_LDOUT%" "LUA_INCDIR=%%I" "LUA_CPATH=%LUA_CPATH%" "LUA_IMPLIB=%%A\%%B" clean all lint-rockspecs c-test-with-cov coverage
+          DO %CURRENT_MAKE% %CURRENT_MAKE_FILE_FLAG% Makefile.windows "PREFIX=%%D" "CC=%%C" "CFLAGS=%%F" "CCONLY=%CURRENT_CCONLY%" "CCOUT=%CURRENT_CCOUT%" "CCINCFLAG=%CURRENT_CCINCFLAG%" "LD=%%L" "LDSHARED=%%S" "LDOUT=%CURRENT_LDOUT%" "LUA_INCDIR=%%I" "LUA_CPATH=%LUA_CPATH%" "LUA_IMPLIB=%%A\%%B" clean all lint-rockspecs tnuminfo-lib
 
-      - name: Lint rockspec, Test with Coverage and Generate Coverage Report (Unix)
+      - name: Run test with Coverage (Windows)
+        if: ${{ runner.os == 'Windows' }}
+        run: lua test.lua --coverage
+
+      - name: Generate Coverage Report (Windows)
+        if: ${{ runner.os == 'Windows' }}
+        run: luacov
+
+      - name: Lint rockspec, Build C module for the tests, Test with Coverage and Generate Coverage Report (Unix)
         if: ${{ runner.os != 'Windows' }}
         run: |
           make \
