@@ -13,7 +13,7 @@ At the moment, through [CI](./.github/workflows/ci.yml), the code is tested on:
 
 At first, we need to have a high-level understanding of the testing process:
 
-1. Begin choosing a C floating-point type to test `lnuminfo` (e.g.: `float`, `double` or `long double`);
+1. Begin by making a choice for the C floating-point type to test (e.g.: `float`, `double` or `long double`);
 2. Obtain the source code for Lua 5.1 or newer (including LuaJIT);
 3. If testing for Lua 5.3 or newer **AND** the selected C type is `float` or `long double`, then patch `luaconf.h` to turn a `lua_Number` into the chosen floating-point type on step (1.);
 4. Build the source code of Lua / LuaJIT;
