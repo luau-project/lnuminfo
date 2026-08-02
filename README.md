@@ -48,9 +48,9 @@ print("RADIX:",      info.RADIX)
 | `EPSILON` | `number` | The difference between 1.0 and the least value greater than 1.0 that is representable in the given floating point type. |
 | `MANT_DIG` | `integer` | Number of base - `RADIX` digits in the floating-point significand ( $p$ ). |
 | `MAX` | `number` | Maximum representable finite floating-point number. |
-| `MAX_10_EXP` | `number` | Maximum negative integer such that 10 raised to that power is in the range of representable finite floating-point numbers. |
-| `MAX_EXP` | `integer` | Maximum negative integer such that `RADIX` raised to that power minus 1 is a representable finite floating-point number ( $e_{max}$ ). |
-| `MIN` | `number` | Minimum normalized floating-point number. |
+| `MAX_10_EXP` | `integer` | Maximum integer such that 10 raised to that power is in the range of representable finite floating-point numbers. |
+| `MAX_EXP` | `integer` | Maximum integer such that `RADIX` raised to that power minus 1 is a representable finite floating-point number ( $e_{max}$ ). |
+| `MIN` | `number` | Minimum normalized positive floating-point number. |
 | `MIN_10_EXP` | `integer` | Minimum negative integer such that 10 raised to that power is in the range of normalized floating-point numbers. |
 | `MIN_EXP` | `integer` | Minimum negative integer such that `RADIX` raised to that power minus 1 is a normalized floating-point number ( $e_{min}$ ). |
 | `RADIX` | `integer` | radix of exponent representation ( $b$ ). |
