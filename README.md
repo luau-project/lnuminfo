@@ -73,20 +73,24 @@ print(info.RADIX)
 * [Methods](#methods)
     * [detect](#detect)
 * [Tests](#tests)
-* [Code Coverage](#code-coverage)
 * [Known Issues](#known-issues)
 * [Contact](#contact)
 * [History](#history)
 
 ## Introduction
 
-Usually, the standard build of Lua (&ge; `5.1`) uses `double` as a floating-point type. Since version `5.3`, one can build Lua employing `float` (single precision), `double` (double precision) or `long double` (often, double extended precision on Intel / AMD `x86`, `x86_64`) as the floating-point type for Lua numbers. Nowadays, almost all processors / compilers are compliant to one of the following IEEE 754 standard floating-point formats:
+Usually, the standard build of Lua (&ge; `5.1`) uses `double` as a floating-point type. Since version `5.3`, with minimal to pratically no effort, one can build Lua employing `float`, `double` or `long double` as the floating-point type for Lua numbers. Nowadays, although not mandatory by the C standard, default C compiler settings in different platforms will usually map these C types to common IEEE 754 standard floating-point formats:
 
 1. IEEE 754 standard, 32-bit base-2, known as `binary32` (single precision)
 2. IEEE 754 standard, 64-bit base-2, known as `binary64` (double precision)
 3. IEEE 754 standard, 80-bit base-2, known as `binary64-extended` (double extended precision)
+4. IEEE 754 standard, 128-bit base-2, known as `binary128` (quadruple precision)
+
+Often, `float` is mapped to `binary32`, `double` to `binary64` and `long double` to `binary64-extended` in recent Intel / AMD `X86` or `x86_64` platforms.
 
 > [!NOTE]
+> 
+> By the C standard, the C type `long double` is not required to have a higher precision than `double`:
 > 
 > * On Windows, the Microsoft Visual C/C++ toolchain (MSVC) maps `long double` to double precision (`binary64`) floating-point numbers. If you use MinGW / MinGW-w64 toolchains building Lua numbers for `long double`, please check the [known issues](#known-issues);
 > * On the ARM64 architecture used by Apple Silicon macOS, `long double` is also mapped to `binary64`.
@@ -113,14 +117,13 @@ Thus, the role of `lnuminfo` is to determine dynamically, in pure Lua, a set of 
 
 ## Use Cases
 
-In embedded systems, a device supporting only 32-bit numbers (`binary32`) may be a wise choice to cut manufacturing costs. On the other hand, in scientific computing using powerful hardware, it makes sense to utilize `binary64-extended` or even 128-bit numbers (`binary128`) to improve precision of numerical algorithms.
+In embedded systems, a device supporting only 32-bit numbers may be a wise choice to cut manufacturing costs. On the other hand, in scientific computing using powerful hardware, it makes sense to utilize `long double` to improve precision of numerical algorithms.
 
 In pure Lua, there's no straightforward manner to obtain the underlying C type of Lua numbers. By the use of `lnuminfo`, one can:
 
 * calculate numerical limits (e.g.: `MANT_DIG`);
 * control precision of algorithms (e.g.: `DIG` and `EPSILON`) in the host machine;
-* prevent overflow (e.g.: `MAX`) and underflow (e.g.: `MIN`);
-* figure out whether Lua targets `binary32`, `binary64` or `binary64-extended`, under the (very probable) assumption that the system follows IEEE 754 floating-point formats.
+* prevent overflow (e.g.: `MAX`) and underflow (e.g.: `MIN`).
 
 ## Alternative Installation Methods
 
@@ -160,65 +163,7 @@ end
 
 ## Tests
 
-At the moment, it is possible to run tests targeting IEEE 754 `binary32`, IEEE 754 `binary64` or IEEE 754 `binary64-extended`:
-
-* IEEE 754 `binary32`:
-
-    ```bash
-    lua test.lua IEEE-754-binary32
-    ```
-
-* IEEE 754 `binary64`:
-
-    ```bash
-    lua test.lua IEEE-754-binary64
-    ```
-
-* IEEE 754 `binary64-extended`:
-
-    ```bash
-    lua test.lua IEEE-754-binary64-extended
-    ```
-
-## Code Coverage
-
-1. Install `luacov`: in order to collect code coverage data, you must install [LuaCov](https://github.com/lunarmodules/luacov). Again, `luarocks` provides a straightforward manner to setup `luacov` on your machine:
-
-    ```bash
-    luarocks install luacov
-    ```
-
-2. Choose **one** of the IEEE 754 formats and run tests collecting coverage data adding a `--coverage` flag:
-
-    * IEEE 754 `binary32`:
-
-        ```bash
-        lua test.lua --coverage IEEE-754-binary32
-        ```
-
-    * IEEE 754 `binary64`:
-
-        ```bash
-        lua test.lua --coverage IEEE-754-binary64
-        ```
-
-    * IEEE 754 `binary64-extended`:
-
-        ```bash
-        lua test.lua --coverage IEEE-754-binary64-extended
-        ```
-
-3. Generate the coverage report (the file `luacov.report.out`):
-
-    ```bash
-    luacov
-    ```
-
-4. Open the generated file `luacov.report.out` in the text editor of your preference to review the coverage report.
-
-> [!IMPORTANT]
-> 
-> If you are modifying the source code and running code coverage repeatedly, don't forget to delete `luacov.stats.out` and `luacov.report.out` on each iteration.
+The process to run tests in order to assert that `lnuminfo` works correctly is a bit delicate and requires non-trivial knowledge. For such reason, the details to run the test suite are located in the [TESTING](./TESTING.md) page.
 
 ## Known Issues
 
