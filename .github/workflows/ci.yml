@@ -171,7 +171,7 @@ jobs:
         working-directory: cluacov-${{ env.CLUACOV_VERSION }}
         run: luarocks make "rockspecs/cluacov-${{ env.CLUACOV_VERSION }}-${{ env.CLUACOV_ROCKSPEC_REV }}.rockspec"
 
-      - name: Lint rockspec, Build C module for the tests, Test with Coverage and Generate Coverage Report (Windows)
+      - name: Lint rockspecs, Build C module for the tests, Test with Coverage and Generate Coverage Report (Windows)
         if: ${{ runner.os == 'Windows' }}
         shell: cmd
         run: |
@@ -204,8 +204,7 @@ jobs:
           DO FOR /F "TOKENS=* USEBACKQ" %%B IN (`luarocks config variables.LUALIB`) ^
           DO (
             %CURRENT_MAKE% ^
-              %CURRENT_MAKE_FILE_FLAG% ^
-              Makefile.windows ^
+              %CURRENT_MAKE_FILE_FLAG% Makefile.windows ^
               "PREFIX=%%D" ^
               "CC=%%C" ^
               "CFLAGS=%%F" ^
@@ -220,7 +219,7 @@ jobs:
               clean all lint-rockspecs c-test-with-cov coverage
           )
 
-      - name: Lint rockspec, Build C module for the tests, Test with Coverage and Generate Coverage Report (Unix)
+      - name: Lint rockspecs, Build C module for the tests, Test with Coverage and Generate Coverage Report (Unix)
         if: ${{ runner.os != 'Windows' }}
         run: |
           make \
@@ -387,7 +386,7 @@ jobs:
         working-directory: cluacov-${{ env.CLUACOV_VERSION }}
         run: luarocks make "rockspecs/cluacov-${{ env.CLUACOV_VERSION }}-${{ env.CLUACOV_ROCKSPEC_REV }}.rockspec"
 
-      - name: Lint rockspec, Build C module for the tests, Test with Coverage and Generate Coverage Report (Windows)
+      - name: Lint rockspecs, Build C module for the tests, Test with Coverage and Generate Coverage Report (Windows)
         if: ${{ runner.os == 'Windows' }}
         shell: cmd
         run: |
@@ -420,8 +419,7 @@ jobs:
           DO FOR /F "TOKENS=* USEBACKQ" %%B IN (`luarocks config variables.LUALIB`) ^
           DO (
             %CURRENT_MAKE% ^
-              %CURRENT_MAKE_FILE_FLAG% ^
-              Makefile.windows ^
+              %CURRENT_MAKE_FILE_FLAG% Makefile.windows ^
               "PREFIX=%%D" ^
               "CC=%%C" ^
               "CFLAGS=%%F" ^
@@ -436,7 +434,7 @@ jobs:
               clean all lint-rockspecs c-test-with-cov coverage
           )
 
-      - name: Lint rockspec, Build C module for the tests, Test with Coverage and Generate Coverage Report (Unix)
+      - name: Lint rockspecs, Build C module for the tests, Test with Coverage and Generate Coverage Report (Unix)
         if: ${{ runner.os != 'Windows' }}
         run: |
           make \
