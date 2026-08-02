@@ -1,9 +1,5 @@
 # lnuminfo
 
-> [!IMPORTANT]
-> 
-> Do **NOT** use this library while it has not been published on LuaRocks. The last few bugs are being fixed.
-
 [![LuaRocks](https://img.shields.io/luarocks/v/luau-project/lnuminfo?label=LuaRocks&color=2c3e67)](https://luarocks.org/modules/luau-project/lnuminfo)
 [![Coverage Status](https://codecov.io/gh/luau-project/lnuminfo/branch/main/graph/badge.svg)](https://app.codecov.io/gh/luau-project/lnuminfo/tree/main)
 
