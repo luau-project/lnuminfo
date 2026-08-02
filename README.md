@@ -20,7 +20,7 @@ luarocks install lnuminfo
 local lnuminfo = require("lnuminfo")
 
 -- print the library version
-print(lnuminfo.version)
+print("lnuminfo version:", lnuminfo.version)
 
 -- get a table holding
 -- all the characteristics
@@ -28,16 +28,16 @@ local info = lnuminfo.detect()
 
 -- print characteristics available
 -- in the `info' table
-print(info.DIG)
-print(info.EPSILON)
-print(info.MANT_DIG)
-print(info.MAX)
-print(info.MAX_10_EXP)
-print(info.MAX_EXP)
-print(info.MIN)
-print(info.MIN_10_EXP)
-print(info.MIN_EXP)
-print(info.RADIX)
+print("DIG:",        info.DIG)
+print("EPSILON:",    info.EPSILON)
+print("MANT_DIG:",   info.MANT_DIG)
+print("MAX:",        info.MAX)
+print("MAX_10_EXP:", info.MAX_10_EXP)
+print("MAX_EXP:",    info.MAX_EXP)
+print("MIN:",        info.MIN)
+print("MIN_10_EXP:", info.MIN_10_EXP)
+print("MIN_EXP:",    info.MIN_EXP)
+print("RADIX:",      info.RADIX)
 ```
 
 ## Floating-point Characteristics
