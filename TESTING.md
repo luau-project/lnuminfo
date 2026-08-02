@@ -30,7 +30,7 @@ At first, we need to have a high-level understanding of the testing process:
 
 ## Test
 
-After finishing the setup of a patched Lua version, and the [tnuminfo.c](./tnuminfo.c) is built, just run the command
+After finishing the setup of a patched Lua version, and the [tnuminfo.c](./tnuminfo.c) is built for that patched version, just run the command
 
 ```bash
 lua test.lua
