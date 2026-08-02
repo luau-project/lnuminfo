@@ -4,11 +4,10 @@
 
 At the moment, through [CI](./.github/workflows/ci.yml), the code is tested on:
 
-* Linux (x86_64 and ARM64) with GCC provided by Ubuntu
-* macOS (ARM64 on Apple Silicon) with Apple Clang
-* Windows (x86_64 and ARM64):
-    * with MSVC provided by Microsoft;
-    * with MinGW-w64, except `long double` as detailed at [Known Issues](./README.md#known-issues), provided by `GCC`.
+* Linux (x86_64 and ARM64) with GCC provided by Ubuntu;
+* macOS (ARM64 on Apple Silicon) with Apple Clang;
+* Windows (x86_64 and ARM64) with MSVC provided by Microsoft;
+* Windows (x86_64) with MinGW-w64, except `long double` as detailed at [Known Issues](./README.md#known-issues), provided by `GCC`.
 
 ## Mental Model of the Testing Process
 
