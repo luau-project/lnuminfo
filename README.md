@@ -119,7 +119,7 @@ Thus, the role of `lnuminfo` is to determine dynamically, in pure Lua, a set of 
 
 In embedded systems, a device supporting only 32-bit numbers may be a wise choice to cut manufacturing costs. On the other hand, in scientific computing using powerful hardware, it makes sense to utilize `long double` to improve precision of numerical algorithms.
 
-In pure Lua, there's no straightforward manner to obtain the underlying C type of Lua numbers. By the use of `lnuminfo`, one can:
+By the use of `lnuminfo`, one can:
 
 * calculate numerical limits (e.g.: `MANT_DIG`);
 * control precision of algorithms (e.g.: `DIG` and `EPSILON`) in the host machine;
