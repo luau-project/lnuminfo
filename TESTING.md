@@ -2,7 +2,7 @@
 
 ## Test Platforms
 
-At the moment, through [CI](./.github/workflows/ci.yml), the code is tested on:
+At the moment, through [CI](./.github/workflows/ci.yml), `lnuminfo` code is tested on:
 
 * Linux (x86_64 and ARM64) with GCC provided by Ubuntu;
 * macOS (ARM64 on Apple Silicon) with Apple Clang;
