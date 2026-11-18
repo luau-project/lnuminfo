@@ -68,6 +68,9 @@ jobs:
 
           - os: ubuntu-24.04-arm
             toolchain: msvc
+    env:
+      TOOLCHAIN: ${{ matrix.toolchain }}
+
     steps:
 
       - name: Checkout
@@ -75,12 +78,12 @@ jobs:
 
       - name: Setup MSVC developer prompt
         uses: step-security/msvc-dev-cmd@22c98154b708dbd743e6f27a933cf6ceba3305c4 # v1.13.1
-        if: ${{ runner.os == 'Windows' && matrix.toolchain == 'msvc' }}
+        if: runner.os == 'Windows' && matrix.toolchain == 'msvc'
         with:
           arch: ${{ runner.arch }}
 
       - name: Install Lua
-        uses: luau-project/setup-lua@c47c002fc60841a11b22ef3058c86a3d08acf218 # v2.0.1
+        uses: luau-project/setup-lua@21cfaee9b36a5aede562293e9cb467397a79c7f5 # v3.1.0
         with:
           lua-version: ${{ matrix.lua-version }}
 
@@ -90,107 +93,107 @@ jobs:
       - name: Print LuaRocks version
         run: luarocks --version
 
-      - name: Restore datafile tarball
-        id: restore-datafile-tarball
-        uses: actions/cache/restore@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
-        with:
-          path: deps/datafile-${{ env.DATAFILE_VERSION }}.tar.gz
-          key: datafile-${{ env.DATAFILE_VERSION }}
-          enableCrossOsArchive: true
+      - name: Download datafile (Unix)
+        if: runner.os != 'Windows'
+        run: curl -L --create-dirs -o "deps/datafile-${DATAFILE_VERSION}.tar.gz" "https://github.com/hishamhm/datafile/archive/refs/tags/v${DATAFILE_VERSION}.tar.gz"
 
-      - name: Download datafile
-        if: ${{ steps.restore-datafile-tarball.outputs.cache-hit != 'true' }}
-        run: curl -L --create-dirs -o "deps/datafile-${{ env.DATAFILE_VERSION }}.tar.gz" "https://github.com/hishamhm/datafile/archive/refs/tags/v${{ env.DATAFILE_VERSION }}.tar.gz"
+      - name: Download datafile (Windows)
+        if: runner.os == 'Windows'
+        shell: cmd
+        run: curl -L --create-dirs -o "deps\datafile-%DATAFILE_VERSION%.tar.gz" "https://github.com/hishamhm/datafile/archive/refs/tags/v%DATAFILE_VERSION%.tar.gz"
 
-      - name: Save datafile tarball
-        if: ${{ steps.restore-datafile-tarball.outputs.cache-hit != 'true' }}
-        uses: actions/cache/save@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
-        with:
-          path: deps/datafile-${{ env.DATAFILE_VERSION }}.tar.gz
-          key: datafile-${{ env.DATAFILE_VERSION }}
-          enableCrossOsArchive: true
+      - name: Extract datafile (Unix)
+        if: runner.os != 'Windows'
+        run: tar -xf "deps/datafile-${DATAFILE_VERSION}.tar.gz"
 
-      - name: Extract datafile
-        run: tar -xf "deps/datafile-${{ env.DATAFILE_VERSION }}.tar.gz"
+      - name: Extract datafile (Windows)
+        if: runner.os == 'Windows'
+        shell: cmd
+        run: tar -xf "deps\datafile-%DATAFILE_VERSION%.tar.gz"
 
-      - name: Install datafile
-        working-directory: datafile-${{ env.DATAFILE_VERSION }}
-        run: luarocks make "rockspecs/datafile-${{ env.DATAFILE_VERSION }}-${{ env.DATAFILE_ROCKSPEC_REV }}.rockspec"
+      - name: Install datafile (Unix)
+        if: runner.os != 'Windows'
+        run: luarocks make "rockspecs/datafile-${DATAFILE_VERSION}-${DATAFILE_ROCKSPEC_REV}.rockspec"
 
-      - name: Restore luacov tarball
-        id: restore-luacov-tarball
-        uses: actions/cache/restore@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
-        with:
-          path: deps/luacov-${{ env.LUACOV_VERSION }}.tar.gz
-          key: luacov-${{ env.LUACOV_VERSION }}
-          enableCrossOsArchive: true
+      - name: Install datafile (Windows)
+        if: runner.os == 'Windows'
+        shell: cmd
+        run: luarocks make "rockspecs\datafile-%DATAFILE_VERSION%-%DATAFILE_ROCKSPEC_REV%.rockspec"
 
-      - name: Download luacov
-        if: ${{ steps.restore-luacov-tarball.outputs.cache-hit != 'true' }}
-        run: curl -L --create-dirs -o "deps/luacov-${{ env.LUACOV_VERSION }}.tar.gz" "https://github.com/lunarmodules/luacov/archive/refs/tags/v${{ env.LUACOV_VERSION }}.tar.gz"
+      - name: Download luacov (Unix)
+        if: runner.os != 'Windows'
+        run: curl -L --create-dirs -o "deps/luacov-${LUACOV_VERSION}.tar.gz" "https://github.com/lunarmodules/cluacov/archive/refs/tags/v${LUACOV_VERSION}.tar.gz"
 
-      - name: Save luacov tarball
-        if: ${{ steps.restore-luacov-tarball.outputs.cache-hit != 'true' }}
-        uses: actions/cache/save@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
-        with:
-          path: deps/luacov-${{ env.LUACOV_VERSION }}.tar.gz
-          key: luacov-${{ env.LUACOV_VERSION }}
-          enableCrossOsArchive: true
+      - name: Download luacov (Windows)
+        if: runner.os == 'Windows'
+        shell: cmd
+        run: curl -L --create-dirs -o "deps\luacov-%LUACOV_VERSION%.tar.gz" "https://github.com/lunarmodules/cluacov/archive/refs/tags/v%LUACOV_VERSION%.tar.gz"
 
-      - name: Extract luacov
-        run: tar -xf "deps/luacov-${{ env.LUACOV_VERSION }}.tar.gz"
+      - name: Extract luacov (Unix)
+        if: runner.os != 'Windows'
+        run: tar -xf "deps/luacov-${LUACOV_VERSION}.tar.gz"
 
-      - name: Install luacov
-        working-directory: luacov-${{ env.LUACOV_VERSION }}
-        run: luarocks make "rockspecs/luacov-${{ env.LUACOV_VERSION }}-${{ env.LUACOV_ROCKSPEC_REV }}.rockspec"
+      - name: Extract luacov (Windows)
+        if: runner.os == 'Windows'
+        shell: cmd
+        run: tar -xf "deps\luacov-%LUACOV_VERSION%.tar.gz"
 
-      - name: Restore cluacov tarball
-        id: restore-cluacov-tarball
-        uses: actions/cache/restore@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
-        with:
-          path: deps/cluacov-${{ env.CLUACOV_VERSION }}.tar.gz
-          key: cluacov-${{ env.CLUACOV_VERSION }}
-          enableCrossOsArchive: true
+      - name: Install luacov (Unix)
+        if: runner.os != 'Windows'
+        run: luarocks make "rockspecs/luacov-${LUACOV_VERSION}-${LUACOV_ROCKSPEC_REV}.rockspec"
 
-      - name: Download cluacov
-        if: ${{ steps.restore-cluacov-tarball.outputs.cache-hit != 'true' }}
-        run: curl -L --create-dirs -o "deps/cluacov-${{ env.CLUACOV_VERSION }}.tar.gz" "https://github.com/lunarmodules/cluacov/archive/refs/tags/${{ env.CLUACOV_VERSION }}.tar.gz"
+      - name: Install luacov (Windows)
+        if: runner.os == 'Windows'
+        shell: cmd
+        run: luarocks make "rockspecs\luacov-%LUACOV_VERSION%-%LUACOV_ROCKSPEC_REV%.rockspec"
 
-      - name: Save cluacov tarball
-        if: ${{ steps.restore-cluacov-tarball.outputs.cache-hit != 'true' }}
-        uses: actions/cache/save@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
-        with:
-          path: deps/cluacov-${{ env.CLUACOV_VERSION }}.tar.gz
-          key: cluacov-${{ env.CLUACOV_VERSION }}
-          enableCrossOsArchive: true
+      - name: Download cluacov (Unix)
+        if: runner.os != 'Windows'
+        run: curl -L --create-dirs -o "deps/cluacov-${CLUACOV_VERSION}.tar.gz" "https://github.com/lunarmodules/cluacov/archive/refs/tags/${CLUACOV_VERSION}.tar.gz"
 
-      - name: Extract cluacov
-        run: tar -xf "deps/cluacov-${{ env.CLUACOV_VERSION }}.tar.gz"
+      - name: Download cluacov (Windows)
+        if: runner.os == 'Windows'
+        shell: cmd
+        run: curl -L --create-dirs -o "deps\cluacov-%CLUACOV_VERSION%.tar.gz" "https://github.com/lunarmodules/cluacov/archive/refs/tags/%CLUACOV_VERSION%.tar.gz"
 
-      - name: Install cluacov
-        working-directory: cluacov-${{ env.CLUACOV_VERSION }}
-        run: luarocks make "rockspecs/cluacov-${{ env.CLUACOV_VERSION }}-${{ env.CLUACOV_ROCKSPEC_REV }}.rockspec"
+      - name: Extract cluacov (Unix)
+        if: runner.os != 'Windows'
+        run: tar -xf "deps/cluacov-${CLUACOV_VERSION}.tar.gz"
+
+      - name: Extract cluacov (Windows)
+        if: runner.os == 'Windows'
+        shell: cmd
+        run: tar -xf "deps\cluacov-%CLUACOV_VERSION%.tar.gz"
+
+      - name: Install cluacov (Unix)
+        if: runner.os != 'Windows'
+        run: luarocks make "rockspecs/cluacov-${CLUACOV_VERSION}-${CLUACOV_ROCKSPEC_REV}.rockspec"
+
+      - name: Install cluacov (Windows)
+        if: runner.os == 'Windows'
+        shell: cmd
+        run: luarocks make "rockspecs\cluacov-%CLUACOV_VERSION%-%CLUACOV_ROCKSPEC_REV%.rockspec"
 
       - name: Lint rockspecs, Build C module for the tests, Test with Coverage and Generate Coverage Report (Windows)
-        if: ${{ runner.os == 'Windows' }}
+        if: runner.os == 'Windows'
         shell: cmd
         run: |
-          IF "${{ matrix.toolchain }}" EQU "msvc" (
+          IF "%TOOLCHAIN%" EQU "msvc" (
             SET "CURRENT_MAKE=nmake"
             SET "CURRENT_MAKE_FILE_FLAG=/F"
             SET "CURRENT_CCONLY=/c"
             SET "CURRENT_CCOUT=/Fo"
-            SET "CURRENT_CCINCFLAG=/I"
+            SET "CURRENT_CCINCLUDEFLAG=/I"
             SET "CURRENT_LDOUT=/OUT:"
-          ) ELSE IF "${{ matrix.toolchain }}" EQU "cc" (
+          ) ELSE IF "%TOOLCHAIN%" EQU "cc" (
             SET "CURRENT_MAKE=mingw32-make"
             SET "CURRENT_MAKE_FILE_FLAG=-f"
             SET "CURRENT_CCONLY=-c"
             SET "CURRENT_CCOUT=-o "
-            SET "CURRENT_CCINCFLAG=-I"
+            SET "CURRENT_CCINCLUDEFLAG=-I"
             SET "CURRENT_LDOUT=-o "
           ) ELSE (
-            ECHO Unexpected matrix.toolchain: ${{ matrix.toolchain }}
+            ECHO Unexpected toolchain: %TOOLCHAIN%
             EXIT /B 1
           )
 
@@ -204,23 +207,23 @@ jobs:
           DO FOR /F "TOKENS=* USEBACKQ" %%B IN (`luarocks config variables.LUALIB`) ^
           DO (
             %CURRENT_MAKE% ^
-              %CURRENT_MAKE_FILE_FLAG% Makefile.windows ^
+              %CURRENT_MAKE_FILE_FLAG% Makefile.win ^
               "PREFIX=%%D" ^
               "CC=%%C" ^
               "CFLAGS=%%F" ^
               "CCONLY=%CURRENT_CCONLY%" ^
               "CCOUT=%CURRENT_CCOUT%" ^
-              "CCINCFLAG=%CURRENT_CCINCFLAG%" ^
+              "CCINCLUDEFLAG=%CURRENT_CCINCLUDEFLAG%" ^
               "LD=%%L" ^
               "LDSHARED=%%S" ^
               "LDOUT=%CURRENT_LDOUT%" ^
               "LUA_INCDIR=%%I" ^
-              "LUA_IMPLIB=%%A\%%B" ^
-              clean all lint-rockspecs c-test-with-cov coverage
+              "LUA_LIB=%%A\%%B" ^
+              clean lint-rockspecs c-test-with-cov coverage
           )
 
       - name: Lint rockspecs, Build C module for the tests, Test with Coverage and Generate Coverage Report (Unix)
-        if: ${{ runner.os != 'Windows' }}
+        if: runner.os != 'Windows'
         run: |
           make \
             -f Makefile.unix \
@@ -230,7 +233,7 @@ jobs:
             "LD=$(luarocks config variables.LD)" \
             "LDSHARED=$(luarocks config variables.LIBFLAG)" \
             "LUA_INCDIR=$(luarocks config variables.LUA_INCDIR)" \
-            clean all lint-rockspecs c-test-with-cov coverage
+            clean lint-rockspecs c-test-with-cov coverage
 
       - name: Upload coverage to CodeCov
         uses: codecov/codecov-action@fb8b3582c8e4def4969c97caa2f19720cb33a72f # v7.0.0
@@ -282,6 +285,9 @@ jobs:
             toolchain: cc
             c-float-type: long-double
 
+    env:
+      TOOLCHAIN: ${{ matrix.toolchain }}
+
     steps:
 
       - name: Checkout
@@ -289,12 +295,12 @@ jobs:
 
       - name: Setup MSVC developer prompt
         uses: step-security/msvc-dev-cmd@22c98154b708dbd743e6f27a933cf6ceba3305c4 # v1.13.1
-        if: ${{ runner.os == 'Windows' && matrix.toolchain == 'msvc' }}
+        if: runner.os == 'Windows' && matrix.toolchain == 'msvc'
         with:
           arch: ${{ runner.arch }}
 
       - name: Install Lua
-        uses: luau-project/setup-lua@c47c002fc60841a11b22ef3058c86a3d08acf218 # v2.0.1
+        uses: luau-project/setup-lua@21cfaee9b36a5aede562293e9cb467397a79c7f5 # v3.1.0
         with:
           lua-version: ${{ matrix.lua-version }}
           lua-patches: ${{ github.workspace }}/.github/workflows/lua-${{ matrix.lua-version }}-luaconf-${{ matrix.c-float-type }}.patch
@@ -305,107 +311,107 @@ jobs:
       - name: Print LuaRocks version
         run: luarocks --version
 
-      - name: Restore datafile tarball
-        id: restore-datafile-tarball
-        uses: actions/cache/restore@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
-        with:
-          path: deps/datafile-${{ env.DATAFILE_VERSION }}.tar.gz
-          key: datafile-${{ env.DATAFILE_VERSION }}
-          enableCrossOsArchive: true
+      - name: Download datafile (Unix)
+        if: runner.os != 'Windows'
+        run: curl -L --create-dirs -o "deps/datafile-${DATAFILE_VERSION}.tar.gz" "https://github.com/hishamhm/datafile/archive/refs/tags/v${DATAFILE_VERSION}.tar.gz"
 
-      - name: Download datafile
-        if: ${{ steps.restore-datafile-tarball.outputs.cache-hit != 'true' }}
-        run: curl -L --create-dirs -o "deps/datafile-${{ env.DATAFILE_VERSION }}.tar.gz" "https://github.com/hishamhm/datafile/archive/refs/tags/v${{ env.DATAFILE_VERSION }}.tar.gz"
+      - name: Download datafile (Windows)
+        if: runner.os == 'Windows'
+        shell: cmd
+        run: curl -L --create-dirs -o "deps\datafile-%DATAFILE_VERSION%.tar.gz" "https://github.com/hishamhm/datafile/archive/refs/tags/v%DATAFILE_VERSION%.tar.gz"
 
-      - name: Save datafile tarball
-        if: ${{ steps.restore-datafile-tarball.outputs.cache-hit != 'true' }}
-        uses: actions/cache/save@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
-        with:
-          path: deps/datafile-${{ env.DATAFILE_VERSION }}.tar.gz
-          key: datafile-${{ env.DATAFILE_VERSION }}
-          enableCrossOsArchive: true
+      - name: Extract datafile (Unix)
+        if: runner.os != 'Windows'
+        run: tar -xf "deps/datafile-${DATAFILE_VERSION}.tar.gz"
 
-      - name: Extract datafile
-        run: tar -xf "deps/datafile-${{ env.DATAFILE_VERSION }}.tar.gz"
+      - name: Extract datafile (Windows)
+        if: runner.os == 'Windows'
+        shell: cmd
+        run: tar -xf "deps\datafile-%DATAFILE_VERSION%.tar.gz"
 
-      - name: Install datafile
-        working-directory: datafile-${{ env.DATAFILE_VERSION }}
-        run: luarocks make "rockspecs/datafile-${{ env.DATAFILE_VERSION }}-${{ env.DATAFILE_ROCKSPEC_REV }}.rockspec"
+      - name: Install datafile (Unix)
+        if: runner.os != 'Windows'
+        run: luarocks make "rockspecs/datafile-${DATAFILE_VERSION}-${DATAFILE_ROCKSPEC_REV}.rockspec"
 
-      - name: Restore luacov tarball
-        id: restore-luacov-tarball
-        uses: actions/cache/restore@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
-        with:
-          path: deps/luacov-${{ env.LUACOV_VERSION }}.tar.gz
-          key: luacov-${{ env.LUACOV_VERSION }}
-          enableCrossOsArchive: true
+      - name: Install datafile (Windows)
+        if: runner.os == 'Windows'
+        shell: cmd
+        run: luarocks make "rockspecs\datafile-%DATAFILE_VERSION%-%DATAFILE_ROCKSPEC_REV%.rockspec"
 
-      - name: Download luacov
-        if: ${{ steps.restore-luacov-tarball.outputs.cache-hit != 'true' }}
-        run: curl -L --create-dirs -o "deps/luacov-${{ env.LUACOV_VERSION }}.tar.gz" "https://github.com/lunarmodules/luacov/archive/refs/tags/v${{ env.LUACOV_VERSION }}.tar.gz"
+      - name: Download luacov (Unix)
+        if: runner.os != 'Windows'
+        run: curl -L --create-dirs -o "deps/luacov-${LUACOV_VERSION}.tar.gz" "https://github.com/lunarmodules/cluacov/archive/refs/tags/v${LUACOV_VERSION}.tar.gz"
 
-      - name: Save luacov tarball
-        if: ${{ steps.restore-luacov-tarball.outputs.cache-hit != 'true' }}
-        uses: actions/cache/save@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
-        with:
-          path: deps/luacov-${{ env.LUACOV_VERSION }}.tar.gz
-          key: luacov-${{ env.LUACOV_VERSION }}
-          enableCrossOsArchive: true
+      - name: Download luacov (Windows)
+        if: runner.os == 'Windows'
+        shell: cmd
+        run: curl -L --create-dirs -o "deps\luacov-%LUACOV_VERSION%.tar.gz" "https://github.com/lunarmodules/cluacov/archive/refs/tags/v%LUACOV_VERSION%.tar.gz"
 
-      - name: Extract luacov
-        run: tar -xf "deps/luacov-${{ env.LUACOV_VERSION }}.tar.gz"
+      - name: Extract luacov (Unix)
+        if: runner.os != 'Windows'
+        run: tar -xf "deps/luacov-${LUACOV_VERSION}.tar.gz"
 
-      - name: Install luacov
-        working-directory: luacov-${{ env.LUACOV_VERSION }}
-        run: luarocks make "rockspecs/luacov-${{ env.LUACOV_VERSION }}-${{ env.LUACOV_ROCKSPEC_REV }}.rockspec"
+      - name: Extract luacov (Windows)
+        if: runner.os == 'Windows'
+        shell: cmd
+        run: tar -xf "deps\luacov-%LUACOV_VERSION%.tar.gz"
 
-      - name: Restore cluacov tarball
-        id: restore-cluacov-tarball
-        uses: actions/cache/restore@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
-        with:
-          path: deps/cluacov-${{ env.CLUACOV_VERSION }}.tar.gz
-          key: cluacov-${{ env.CLUACOV_VERSION }}
-          enableCrossOsArchive: true
+      - name: Install luacov (Unix)
+        if: runner.os != 'Windows'
+        run: luarocks make "rockspecs/luacov-${LUACOV_VERSION}-${LUACOV_ROCKSPEC_REV}.rockspec"
 
-      - name: Download cluacov
-        if: ${{ steps.restore-cluacov-tarball.outputs.cache-hit != 'true' }}
-        run: curl -L --create-dirs -o "deps/cluacov-${{ env.CLUACOV_VERSION }}.tar.gz" "https://github.com/lunarmodules/cluacov/archive/refs/tags/${{ env.CLUACOV_VERSION }}.tar.gz"
+      - name: Install luacov (Windows)
+        if: runner.os == 'Windows'
+        shell: cmd
+        run: luarocks make "rockspecs\luacov-%LUACOV_VERSION%-%LUACOV_ROCKSPEC_REV%.rockspec"
 
-      - name: Save cluacov tarball
-        if: ${{ steps.restore-cluacov-tarball.outputs.cache-hit != 'true' }}
-        uses: actions/cache/save@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
-        with:
-          path: deps/cluacov-${{ env.CLUACOV_VERSION }}.tar.gz
-          key: cluacov-${{ env.CLUACOV_VERSION }}
-          enableCrossOsArchive: true
+      - name: Download cluacov (Unix)
+        if: runner.os != 'Windows'
+        run: curl -L --create-dirs -o "deps/cluacov-${CLUACOV_VERSION}.tar.gz" "https://github.com/lunarmodules/cluacov/archive/refs/tags/${CLUACOV_VERSION}.tar.gz"
 
-      - name: Extract cluacov
-        run: tar -xf "deps/cluacov-${{ env.CLUACOV_VERSION }}.tar.gz"
+      - name: Download cluacov (Windows)
+        if: runner.os == 'Windows'
+        shell: cmd
+        run: curl -L --create-dirs -o "deps\cluacov-%CLUACOV_VERSION%.tar.gz" "https://github.com/lunarmodules/cluacov/archive/refs/tags/%CLUACOV_VERSION%.tar.gz"
 
-      - name: Install cluacov
-        working-directory: cluacov-${{ env.CLUACOV_VERSION }}
-        run: luarocks make "rockspecs/cluacov-${{ env.CLUACOV_VERSION }}-${{ env.CLUACOV_ROCKSPEC_REV }}.rockspec"
+      - name: Extract cluacov (Unix)
+        if: runner.os != 'Windows'
+        run: tar -xf "deps/cluacov-${CLUACOV_VERSION}.tar.gz"
+
+      - name: Extract cluacov (Windows)
+        if: runner.os == 'Windows'
+        shell: cmd
+        run: tar -xf "deps\cluacov-%CLUACOV_VERSION%.tar.gz"
+
+      - name: Install cluacov (Unix)
+        if: runner.os != 'Windows'
+        run: luarocks make "rockspecs/cluacov-${CLUACOV_VERSION}-${CLUACOV_ROCKSPEC_REV}.rockspec"
+
+      - name: Install cluacov (Windows)
+        if: runner.os == 'Windows'
+        shell: cmd
+        run: luarocks make "rockspecs\cluacov-%CLUACOV_VERSION%-%CLUACOV_ROCKSPEC_REV%.rockspec"
 
       - name: Lint rockspecs, Build C module for the tests, Test with Coverage and Generate Coverage Report (Windows)
-        if: ${{ runner.os == 'Windows' }}
+        if: runner.os == 'Windows'
         shell: cmd
         run: |
-          IF "${{ matrix.toolchain }}" EQU "msvc" (
+          IF "%TOOLCHAIN%" EQU "msvc" (
             SET "CURRENT_MAKE=nmake"
             SET "CURRENT_MAKE_FILE_FLAG=/F"
             SET "CURRENT_CCONLY=/c"
             SET "CURRENT_CCOUT=/Fo"
-            SET "CURRENT_CCINCFLAG=/I"
+            SET "CURRENT_CCINCLUDEFLAG=/I"
             SET "CURRENT_LDOUT=/OUT:"
-          ) ELSE IF "${{ matrix.toolchain }}" EQU "cc" (
+          ) ELSE IF "%TOOLCHAIN%" EQU "cc" (
             SET "CURRENT_MAKE=mingw32-make"
             SET "CURRENT_MAKE_FILE_FLAG=-f"
             SET "CURRENT_CCONLY=-c"
             SET "CURRENT_CCOUT=-o "
-            SET "CURRENT_CCINCFLAG=-I"
+            SET "CURRENT_CCINCLUDEFLAG=-I"
             SET "CURRENT_LDOUT=-o "
           ) ELSE (
-            ECHO Unexpected matrix.toolchain: ${{ matrix.toolchain }}
+            ECHO Unexpected toolchain: %TOOLCHAIN%
             EXIT /B 1
           )
 
@@ -419,23 +425,23 @@ jobs:
           DO FOR /F "TOKENS=* USEBACKQ" %%B IN (`luarocks config variables.LUALIB`) ^
           DO (
             %CURRENT_MAKE% ^
-              %CURRENT_MAKE_FILE_FLAG% Makefile.windows ^
+              %CURRENT_MAKE_FILE_FLAG% Makefile.win ^
               "PREFIX=%%D" ^
               "CC=%%C" ^
               "CFLAGS=%%F" ^
               "CCONLY=%CURRENT_CCONLY%" ^
               "CCOUT=%CURRENT_CCOUT%" ^
-              "CCINCFLAG=%CURRENT_CCINCFLAG%" ^
+              "CCINCLUDEFLAG=%CURRENT_CCINCLUDEFLAG%" ^
               "LD=%%L" ^
               "LDSHARED=%%S" ^
               "LDOUT=%CURRENT_LDOUT%" ^
               "LUA_INCDIR=%%I" ^
               "LUA_IMPLIB=%%A\%%B" ^
-              clean all lint-rockspecs c-test-with-cov coverage
+              clean lint-rockspecs c-test-with-cov coverage
           )
 
       - name: Lint rockspecs, Build C module for the tests, Test with Coverage and Generate Coverage Report (Unix)
-        if: ${{ runner.os != 'Windows' }}
+        if: runner.os != 'Windows'
         run: |
           make \
             -f Makefile.unix \
@@ -445,7 +451,7 @@ jobs:
             "LD=$(luarocks config variables.LD)" \
             "LDSHARED=$(luarocks config variables.LIBFLAG)" \
             "LUA_INCDIR=$(luarocks config variables.LUA_INCDIR)" \
-            clean all lint-rockspecs c-test-with-cov coverage
+            clean lint-rockspecs c-test-with-cov coverage
 
       - name: Upload coverage to CodeCov
         uses: codecov/codecov-action@fb8b3582c8e4def4969c97caa2f19720cb33a72f # v7.0.0
