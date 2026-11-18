@@ -7,7 +7,7 @@ Detect characteristics of floating-point numbers in pure Lua.
 
 ## Quick Install
 
-By far, [LuaRocks](https://luarocks.org/) offers the easiest and recommended method to install `lnuminfo` on your system:
+We recommend [LuaRocks](https://luarocks.org/) to install `lnuminfo` on your system. Once `luarocks` is properly installed, it is enough to run:
 
 ```bash
 luarocks install lnuminfo
@@ -56,7 +56,7 @@ print("RADIX:",      info.RADIX)
 | `RADIX` | `integer` | radix of exponent representation ( $b$ ). |
 
 > [!TIP]
-> 
+>
 > Such descriptions in the table were taken from the C89 standard (American National Standard FIPS PUB 160 X3.159-1989 document).
 
 ## Table of Contents
@@ -85,9 +85,9 @@ Usually, the standard build of Lua (&ge; `5.1`) uses `double` as a floating-poin
 Often, `float` is mapped to `binary32`, `double` to `binary64` and `long double` to `binary64-extended` in recent Intel / AMD `X86` or `x86_64` platforms.
 
 > [!NOTE]
-> 
+>
 > By the C standard, the C type `long double` is not required to have a higher precision than `double`:
-> 
+>
 > * On Windows, the Microsoft Visual C/C++ toolchain (MSVC) maps `long double` to double precision (`binary64`) floating-point numbers. If you use MinGW / MinGW-w64 toolchains building Lua numbers for `long double`, please check the [known issues](#known-issues);
 > * On the ARM64 architecture used by Apple Silicon macOS, `long double` is also mapped to `binary64`.
 
@@ -96,7 +96,7 @@ In C, [floating-point characteristics](#floating-point-characteristics) are expo
 Quoting the C89 standard (American National Standard FIPS PUB 160 X3.159-1989 document)
 
 > A *normalized floating-point* number $x \ \left(f_1 > 0 \ \  if \ \  x \neq 0\right)$ is defined by the following model:
-> 
+>
 > $$
 > x = s \cdot b^e \cdot \sum_{k = 1}^{p} f_k \cdot b^{-k}
 > $$
@@ -123,21 +123,13 @@ By the use of `lnuminfo`, one can:
 
 ## Alternative Installation Methods
 
-The recommended method to install `lnuminfo` through `luarocks` is detailed in the [Quick Install](#quick-install). If you are not inclined to use `luarocks`, you can [Copy Files Manually](#copy-files-manually) or use [Makefiles](#makefiles) instead.
-
-### Copy Files Manually
-
-Simply copy the file [lnuminfo.lua](./lnuminfo.lua) to any location covered by `LUA_PATH` environment variable. If you don't know how `LUA_PATH` works, run this Lua script to find suitable locations to store the content of [lnuminfo.lua](./lnuminfo.lua) in a way expected by the Lua interpreter:
+The recommended method to install `lnuminfo` through `luarocks` is detailed in the [Quick Install](#quick-install). If you are not inclined to use `luarocks`, you can copy files manually. Simply copy the file [lnuminfo.lua](./lnuminfo.lua) to any location covered by `LUA_PATH` environment variable. If you don't know how `LUA_PATH` works, run this Lua script to find suitable locations to store the content of [lnuminfo.lua](./lnuminfo.lua) in a way expected by the Lua interpreter:
 
 ```lua
 for path in package.path:gmatch('[^;]+') do
     print((path:gsub('%?', 'lnuminfo')))
 end
 ```
-
-### Makefiles
-
-*Advanced users only*: alternatively, if you feel comfortable enough working with Makefiles, then read [how to install `lnuminfo` through the Makefiles](./Makefile.md).
 
 ## Properties
 
@@ -164,7 +156,7 @@ The process to run tests in order to assert that `lnuminfo` works correctly is a
 ## Known Issues
 
 > [!IMPORTANT]
-> 
+>
 > In almost all scenarios, including the case that no changes were made to the Lua source code, it will not affect you. The issue described on this section only affects custom builds of Lua such that the `lua_Number` type was changed to a `long double` on a MinGW / MinGW-w64 powered compilers.
 
 On Windows, the Microsoft C Runtime (CRT) maps `long double` to 64-bit `binary64`. For the MSVC toolchain, it is not a problem at all. On the other hand, for MinGW / MinGW-w64, it causes some incompatibilities with `GCC`.
