@@ -124,12 +124,12 @@ jobs:
 
       - name: Download luacov (Unix)
         if: runner.os != 'Windows'
-        run: curl -L --create-dirs -o "deps/luacov-${LUACOV_VERSION}.tar.gz" "https://github.com/lunarmodules/cluacov/archive/refs/tags/v${LUACOV_VERSION}.tar.gz"
+        run: curl -L --create-dirs -o "deps/luacov-${LUACOV_VERSION}.tar.gz" "https://github.com/lunarmodules/luacov/archive/refs/tags/v${LUACOV_VERSION}.tar.gz"
 
       - name: Download luacov (Windows)
         if: runner.os == 'Windows'
         shell: cmd
-        run: curl -L --create-dirs -o "deps\luacov-%LUACOV_VERSION%.tar.gz" "https://github.com/lunarmodules/cluacov/archive/refs/tags/v%LUACOV_VERSION%.tar.gz"
+        run: curl -L --create-dirs -o "deps\luacov-%LUACOV_VERSION%.tar.gz" "https://github.com/lunarmodules/luacov/archive/refs/tags/v%LUACOV_VERSION%.tar.gz"
 
       - name: Extract luacov (Unix)
         if: runner.os != 'Windows'
@@ -348,12 +348,12 @@ jobs:
 
       - name: Download luacov (Unix)
         if: runner.os != 'Windows'
-        run: curl -L --create-dirs -o "deps/luacov-${LUACOV_VERSION}.tar.gz" "https://github.com/lunarmodules/cluacov/archive/refs/tags/v${LUACOV_VERSION}.tar.gz"
+        run: curl -L --create-dirs -o "deps/luacov-${LUACOV_VERSION}.tar.gz" "https://github.com/lunarmodules/luacov/archive/refs/tags/v${LUACOV_VERSION}.tar.gz"
 
       - name: Download luacov (Windows)
         if: runner.os == 'Windows'
         shell: cmd
-        run: curl -L --create-dirs -o "deps\luacov-%LUACOV_VERSION%.tar.gz" "https://github.com/lunarmodules/cluacov/archive/refs/tags/v%LUACOV_VERSION%.tar.gz"
+        run: curl -L --create-dirs -o "deps\luacov-%LUACOV_VERSION%.tar.gz" "https://github.com/lunarmodules/luacov/archive/refs/tags/v%LUACOV_VERSION%.tar.gz"
 
       - name: Extract luacov (Unix)
         if: runner.os != 'Windows'
