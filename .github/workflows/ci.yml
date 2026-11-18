@@ -448,7 +448,7 @@ jobs:
               "LDSHARED=%%S" ^
               "LDOUT=%CURRENT_LDOUT%" ^
               "LUA_INCDIR=%%I" ^
-              "LUA_IMPLIB=%%A\%%B" ^
+              "LUA_LIB=%%A\%%B" ^
               clean lint-rockspecs c-test-with-cov coverage
           )
 
