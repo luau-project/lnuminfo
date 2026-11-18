@@ -113,10 +113,12 @@ jobs:
 
       - name: Install datafile (Unix)
         if: runner.os != 'Windows'
+        working-directory: datafile-${{ env.DATAFILE_VERSION }}
         run: luarocks make "rockspecs/datafile-${DATAFILE_VERSION}-${DATAFILE_ROCKSPEC_REV}.rockspec"
 
       - name: Install datafile (Windows)
         if: runner.os == 'Windows'
+        working-directory: datafile-${{ env.DATAFILE_VERSION }}
         shell: cmd
         run: luarocks make "rockspecs\datafile-%DATAFILE_VERSION%-%DATAFILE_ROCKSPEC_REV%.rockspec"
 
@@ -140,10 +142,12 @@ jobs:
 
       - name: Install luacov (Unix)
         if: runner.os != 'Windows'
+        working-directory: luacov-${{ env.LUACOV_VERSION }}
         run: luarocks make "rockspecs/luacov-${LUACOV_VERSION}-${LUACOV_ROCKSPEC_REV}.rockspec"
 
       - name: Install luacov (Windows)
         if: runner.os == 'Windows'
+        working-directory: luacov-${{ env.LUACOV_VERSION }}
         shell: cmd
         run: luarocks make "rockspecs\luacov-%LUACOV_VERSION%-%LUACOV_ROCKSPEC_REV%.rockspec"
 
@@ -167,10 +171,12 @@ jobs:
 
       - name: Install cluacov (Unix)
         if: runner.os != 'Windows'
+        working-directory: cluacov-${{ env.CLUACOV_VERSION }}
         run: luarocks make "rockspecs/cluacov-${CLUACOV_VERSION}-${CLUACOV_ROCKSPEC_REV}.rockspec"
 
       - name: Install cluacov (Windows)
         if: runner.os == 'Windows'
+        working-directory: cluacov-${{ env.CLUACOV_VERSION }}
         shell: cmd
         run: luarocks make "rockspecs\cluacov-%CLUACOV_VERSION%-%CLUACOV_ROCKSPEC_REV%.rockspec"
 
@@ -331,10 +337,12 @@ jobs:
 
       - name: Install datafile (Unix)
         if: runner.os != 'Windows'
+        working-directory: datafile-${{ env.DATAFILE_VERSION }}
         run: luarocks make "rockspecs/datafile-${DATAFILE_VERSION}-${DATAFILE_ROCKSPEC_REV}.rockspec"
 
       - name: Install datafile (Windows)
         if: runner.os == 'Windows'
+        working-directory: datafile-${{ env.DATAFILE_VERSION }}
         shell: cmd
         run: luarocks make "rockspecs\datafile-%DATAFILE_VERSION%-%DATAFILE_ROCKSPEC_REV%.rockspec"
 
@@ -358,10 +366,12 @@ jobs:
 
       - name: Install luacov (Unix)
         if: runner.os != 'Windows'
+        working-directory: luacov-${{ env.LUACOV_VERSION }}
         run: luarocks make "rockspecs/luacov-${LUACOV_VERSION}-${LUACOV_ROCKSPEC_REV}.rockspec"
 
       - name: Install luacov (Windows)
         if: runner.os == 'Windows'
+        working-directory: luacov-${{ env.LUACOV_VERSION }}
         shell: cmd
         run: luarocks make "rockspecs\luacov-%LUACOV_VERSION%-%LUACOV_ROCKSPEC_REV%.rockspec"
 
@@ -385,10 +395,12 @@ jobs:
 
       - name: Install cluacov (Unix)
         if: runner.os != 'Windows'
+        working-directory: cluacov-${{ env.CLUACOV_VERSION }}
         run: luarocks make "rockspecs/cluacov-${CLUACOV_VERSION}-${CLUACOV_ROCKSPEC_REV}.rockspec"
 
       - name: Install cluacov (Windows)
         if: runner.os == 'Windows'
+        working-directory: cluacov-${{ env.CLUACOV_VERSION }}
         shell: cmd
         run: luarocks make "rockspecs\cluacov-%CLUACOV_VERSION%-%CLUACOV_ROCKSPEC_REV%.rockspec"
 
