@@ -27,7 +27,7 @@
 --================================================================================--
 
 -- Constants
-local version = "0.0.1" -- library version
+local version = "0.1.0" -- library version
 local _RADIX_ = 2 -- default RADIX
 
 -- Start of auxiliary math functions
