@@ -37,7 +37,7 @@ This document provides guidance to publish a new release for `lnuminfo`.
 
 After all the previous steps were performed:
 
-1. Create a new annotated tag (e.g.: `git tag -a "v0.1.1" -m "Release 0.1.1"`) changing `v0.1.1` in the previous command to contain the exact **SAME VERSION** on `version` variable defined in the file `lnuminfo.lua`;
+1. Create a new annotated tag (e.g.: `git tag -a "v0.1.1" -m "Release v0.1.1"`) changing `v0.1.1` in the previous command to contain the exact **SAME VERSION** on `version` variable defined in the file `lnuminfo.lua`;
 
 2. Push the new tag to the remote repository (e.g.: `git push origin v0.1.1`);
 
